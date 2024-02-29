@@ -1,2 +1,3 @@
-# JavaEnterprise2024
-Project for studying on Java Enterprise course
+# Java Enterprise Project
+
+#### This is a project for studying on Java Enterprise 2024 course
