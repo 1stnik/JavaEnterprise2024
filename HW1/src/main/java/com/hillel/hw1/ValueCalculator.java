@@ -1,6 +1,7 @@
 package com.hillel.hw1;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * HW_1 (Value Calculator)
@@ -38,6 +39,10 @@ public class ValueCalculator {
     private int size;
     private int halfSize;
 
+    private static long start;
+
+    private static long end;
+
 
     public ValueCalculator(int size) {
         this.size = Math.max(size, 1_000_000);
@@ -47,7 +52,7 @@ public class ValueCalculator {
 
     public void calculate() throws InterruptedException {
 
-        long start = System.currentTimeMillis();
+        start = System.currentTimeMillis();
 
         Arrays.fill(srcArray, 1.0);
 
@@ -70,9 +75,8 @@ public class ValueCalculator {
 
         System.arraycopy(secondPartArray, 0, srcArray, halfSize, halfSize);
 
-        long end = System.currentTimeMillis();
-        long elapsedTime = end - start;
-        System.out.println("Elapsed time with 2 threads: " + elapsedTime);
+        end = System.currentTimeMillis();
+        System.out.println("Elapsed time with 2 threads: " + (end - start));
 
         // --------------------------------------------------------------
 
@@ -80,8 +84,7 @@ public class ValueCalculator {
         Arrays.fill(srcArray, 1.0);
         arrayChanger(srcArray);
         end = System.currentTimeMillis();
-        elapsedTime = end - start;
-        System.out.println("Elapsed time with 1 thread: " + elapsedTime);
+        System.out.println("Elapsed time with 1 thread: " + (end - start));
 
     }
 
@@ -89,6 +92,29 @@ public class ValueCalculator {
         for (int i = 0; i < arr.length; i++) {
             arr[i] = (float)(arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
         }
+    }
+
+    public double[] shuffleArray() {
+        Random random = new Random();
+        for (int i = 0; i < srcArray.length; i++) {
+            int randomIndex = random.nextInt(srcArray.length);
+            double temp = srcArray[randomIndex];
+            srcArray[randomIndex] = srcArray[i];
+            srcArray[i] = temp;
+        }
+        return srcArray;
+    }
+
+    public void findMaxValue() {
+        double maxValue = srcArray[0];
+        start = System.currentTimeMillis();
+        for (double d : srcArray) {
+            if (d > maxValue) {
+                maxValue = d;
+            }
+        }
+        end = System.currentTimeMillis();
+        System.out.println("Max value = " + maxValue + " Elapsed time with 1 thread: " + (end - start));
     }
 
     public static void main(String[] args) {
@@ -102,5 +128,11 @@ public class ValueCalculator {
 //        for (int i = 0; i < valueCalculator.srcArray.length; i++) {
 //            System.out.println(valueCalculator.srcArray[i]);
 //        }
+
+
+
+        valueCalculator.shuffleArray();
+
+        valueCalculator.findMaxValue();
     }
 }
