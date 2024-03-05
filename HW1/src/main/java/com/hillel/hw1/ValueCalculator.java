@@ -35,12 +35,11 @@ import java.util.Random;
 
 public class ValueCalculator {
 
-    private double[] srcArray;
+    private final double[] srcArray;
     private int size;
     private int halfSize;
 
     private static long start;
-
     private static long end;
 
 
@@ -59,8 +58,8 @@ public class ValueCalculator {
         double[] firstPartArray = new double[halfSize];
         double[] secondPartArray = new double[halfSize];
 
-        System.arraycopy(srcArray, 0 , firstPartArray, 0, halfSize);
-        System.arraycopy(srcArray, halfSize , secondPartArray, 0, halfSize);
+        System.arraycopy(srcArray, 0, firstPartArray, 0, halfSize);
+        System.arraycopy(srcArray, halfSize, secondPartArray, 0, halfSize);
 
         Thread thread1 = new Thread(() -> arrayChanger(firstPartArray));
         Thread thread2 = new Thread(() -> arrayChanger(secondPartArray));
@@ -90,19 +89,18 @@ public class ValueCalculator {
 
     public void arrayChanger(double[] arr) {
         for (int i = 0; i < arr.length; i++) {
-            arr[i] = (float)(arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+            arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
         }
     }
 
-    public double[] shuffleArray() {
+    public void shuffleArray() {
         Random random = new Random();
-        for (int i = 0; i < srcArray.length; i++) {
-            int randomIndex = random.nextInt(srcArray.length);
+        for (int i = srcArray.length - 1; i > 0; i--) {
+            int randomIndex = random.nextInt(i + 1);
             double temp = srcArray[randomIndex];
             srcArray[randomIndex] = srcArray[i];
             srcArray[i] = temp;
         }
-        return srcArray;
     }
 
     public void findMaxValue() {
@@ -117,7 +115,55 @@ public class ValueCalculator {
         System.out.println("Max value = " + maxValue + " Elapsed time with 1 thread: " + (end - start));
     }
 
+    public void findMaxSeveralThreads(int numberOfThreads) throws InterruptedException {
+        start = System.currentTimeMillis();
+        ThreadsHandler[] threads = new ThreadsHandler[numberOfThreads];
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new ThreadsHandler(i, numberOfThreads);
+            threads[i].start();
+        }
+        for (ThreadsHandler t : threads) {
+            t.join();
+        }
+        double max = Double.MIN_VALUE;
+        for (ThreadsHandler t : threads) {
+            if (t.getMaxValue() > max) {
+                max = t.getMaxValue();
+            }
+        }
+        end = System.currentTimeMillis();
+        System.out.println("Max value = " + max + " Elapsed time with " + numberOfThreads + " thread: " + (end - start));
+    }
+
+    private class ThreadsHandler extends Thread {
+
+        private double maxValue;
+
+        private int startIndex;
+
+        private int step;
+
+        public ThreadsHandler(int startIndex, int step) {
+            this.startIndex = startIndex;
+            this.step = step;
+        }
+
+        public double getMaxValue() {
+            return maxValue;
+        }
+
+        @Override
+        public void run() {
+            for (int i = startIndex; i < srcArray.length; i += step) {
+                if (srcArray[i] > maxValue) {
+                    maxValue = srcArray[i];
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) {
+
         ValueCalculator valueCalculator = new ValueCalculator(1_000_000);
 
         try {
@@ -125,14 +171,18 @@ public class ValueCalculator {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-//        for (int i = 0; i < valueCalculator.srcArray.length; i++) {
-//            System.out.println(valueCalculator.srcArray[i]);
-//        }
-
-
 
         valueCalculator.shuffleArray();
 
         valueCalculator.findMaxValue();
+
+        int[] threads = {2, 5, 10};
+        for (int i : threads) {
+            try {
+                valueCalculator.findMaxSeveralThreads(i);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
