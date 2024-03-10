@@ -1,4 +1,4 @@
-package com.hillel.hw1;
+package com.hillel.hw2;
 
 import java.util.Arrays;
 import java.util.Random;
