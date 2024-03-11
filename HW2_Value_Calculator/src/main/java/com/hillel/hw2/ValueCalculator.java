@@ -1,4 +1,4 @@
-package com.hillel.hw1;
+package com.hillel.hw2;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -139,9 +139,9 @@ public class ValueCalculator {
 
         private double maxValue;
 
-        private int startIndex;
+        private final int startIndex;
 
-        private int step;
+        private final int step;
 
         public ThreadsHandler(int startIndex, int step) {
             this.startIndex = startIndex;
