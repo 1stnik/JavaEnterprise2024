@@ -5,6 +5,7 @@ import com.hillel.task_management_system.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 @Configuration
 public class ConfigTaskApplication {
 
