@@ -5,21 +5,21 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.3</version>
+        <version>3.2.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.hillel</groupId>
-    <artifactId>HW5_TaskManagementSystem</artifactId>
+    <artifactId>HW5_Task_Management_System</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>HW5_TaskManagementSystem1</name>
-    <description>HW5_TaskManagementSystem</description>
+    <name>HW5_Task_Management_System</name>
+    <description>HW5_Task_Management_System</description>
     <properties>
         <java.version>21</java.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>

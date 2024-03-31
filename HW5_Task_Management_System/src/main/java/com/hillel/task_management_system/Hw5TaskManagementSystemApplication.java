@@ -1,16 +1,5 @@
 package com.hillel.task_management_system;
 
-/**
- * Завдання: Реалізуйте можливість створювати нові завдання з вказанням назви, опису, терміну виконання та пріоритету.
- * Користувачі: Додавання ти видалення користувачів
- * Призначення завдань: Додайте можливість призначати завдання іншим користувачам. Користувачі можуть відстежувати призначені їм завдання та їх статус.
- * Статус завдань: Реалізуйте різні статуси для завдань (наприклад, "нове", "в роботі", "завершене", "відкладене" тощо) та можливість їх зміни.
- * Пошук та фільтрація: Додайте можливість шукати та фільтрувати завдання за різними критеріями, такими як статус, пріоритет, термін виконання тощо.
- * Зберігання завдань та користувачів зробити в колекціях (самостійно обрати необхідні колекціі)
- * Сервіси з логікою створити як біни та визвати через ApplicationContext.
- */
-
-
 import com.hillel.task_management_system.enums.Priority;
 import com.hillel.task_management_system.enums.Status;
 import com.hillel.task_management_system.model.Task;
@@ -27,6 +16,7 @@ public class Hw5TaskManagementSystemApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext applicationContext =
                 SpringApplication.run(Hw5TaskManagementSystemApplication.class, args);
+
 
         // Get beans
         UserService userService = applicationContext.getBean(UserService.class);
@@ -129,6 +119,6 @@ public class Hw5TaskManagementSystemApplication {
 
         System.out.println("\nNot assigned tasks list:");
         taskService.showNotAssignedTasks();
-
     }
+
 }
