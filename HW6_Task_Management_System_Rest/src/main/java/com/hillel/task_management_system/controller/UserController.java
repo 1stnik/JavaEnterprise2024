@@ -40,8 +40,8 @@ public class UserController {
 
 
     // Test method for RestTemplate:
-    @GetMapping(path = "/testRestTemplate")
-    public String restTemplateTestMethod() {
-        return "String from Rest Template Test Method!";
-    }
+//    @GetMapping(path = "/testRestTemplate")
+//    public String restTemplateTestMethod() {
+//        return "String from Rest Template Test Method!";
+//    }
 }
