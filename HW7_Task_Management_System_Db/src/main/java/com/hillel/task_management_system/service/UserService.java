@@ -4,6 +4,7 @@ import com.hillel.task_management_system.exceptions.UserDoesntExistException;
 import com.hillel.task_management_system.exceptions.UserExistsException;
 import com.hillel.task_management_system.exceptions.UserNullException;
 import com.hillel.task_management_system.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -11,6 +12,8 @@ import java.util.Map;
 
 @Service
 public class UserService {
+
+    private TaskService taskService;
 
     private final Map<Integer, User> users = new HashMap<>();
 

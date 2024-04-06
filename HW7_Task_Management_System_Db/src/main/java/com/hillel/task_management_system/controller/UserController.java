@@ -38,9 +38,5 @@ public class UserController {
         return userService.getUsers();
     }
 
-    // Test method for RestTemplate:
-//    @GetMapping(path = "/testRestTemplate")
-//    public String restTemplateTestMethod() {
-//        return "String from Rest Template Test Method!";
-//    }
+
 }
