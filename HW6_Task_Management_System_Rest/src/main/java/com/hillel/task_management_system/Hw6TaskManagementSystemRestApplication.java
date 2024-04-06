@@ -128,6 +128,40 @@ public class Hw6TaskManagementSystemRestApplication {
 
         System.out.println("\nNot assigned tasks list:");
         taskService.showNotAssignedTasks();
+
+        System.out.println("\nList of users after user deleting: ");
+        for (User user : userService.getUsers().values()) {
+            System.out.println(user);
+        }
+
+        // Add users
+        System.out.println("\n----------------------------------Add users-------------------------------------- ");
+
+        System.out.println("List of users: ");
+        User user4 = new User(4, "Fourth User");
+        userService.addUser(user4);
+        for (User user : userService.getUsers().values()) {
+            System.out.println(user);
+        }
+
+        System.out.println("\n-----------------------Add tasks to list of Not Assigned tasks----------------------- ");
+
+        Task task9 = new Task(100009, "Task 9", "Task nine description", "2024-06-09", Priority.MEDIUM);
+        taskService.addTaskToNotAssignedTasksList(task9);
+        taskService.showNotAssignedTasks();
+
+        System.out.println("\n-------------------------------Assign tasks to users---------------------------------- ");
+
+        taskService.assignTaskToUser(4, task9);
+        taskService.assignTaskToUser(4, task5);
+        System.out.println("\nNot assigned tasks list:");
+        taskService.showNotAssignedTasks();
+
+        System.out.println("\n-------------------------------List of User's tasks after adding task to user----------");
+        taskService.showUserTasks(user1);
+        taskService.showUserTasks(user3);
+        taskService.showUserTasks(user4);
+
     }
 
 }
