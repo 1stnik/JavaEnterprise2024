@@ -6,54 +6,40 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
 
+    // Global Exceptions
     @ExceptionHandler(Exception.class)
     public ErrorBody handleGlobalException(Exception e) {
-//        System.out.println("We have a problem! " + e.getMessage());
         e.printStackTrace();
-        return new ErrorBody("Global Error Description");
+        return new ErrorBody(e.getMessage());
     }
 
+
+    // Task Exceptions
     @ExceptionHandler(TaskNullException.class)
     public ErrorBody handleTaskNullException(Exception e) {
-//        System.out.println("We have a problem! " + e.getMessage());
         e.printStackTrace();
-        return new ErrorBody("Task value is NULL");
+        return new ErrorBody(e.getMessage());
     }
 
-    @ExceptionHandler(TaskDoesntExistException.class)
-    public ErrorBody handleTaskDoesntExistsException(Exception e) {
-//        System.out.println("We have a problem! " + e.getMessage());
+    @ExceptionHandler(TaskSqlException.class)
+    public ErrorBody handleTaskSqlException(Exception e) {
         e.printStackTrace();
-        return new ErrorBody("Task doesn't exist");
+        return new ErrorBody(e.getMessage());
     }
 
 
-
-
-
-
-    @ExceptionHandler(UserDoesntExistException.class)
-    public ErrorBody handleUserDoesntExistsException(Exception e) {
-//        System.out.println("We have a problem! " + e.getMessage());
-        e.printStackTrace();
-        return new ErrorBody("User doesn't exist in the DB");
-    }
-
-    @ExceptionHandler(UserExistsException.class)
-    public ErrorBody handleUserExistsException(Exception e) {
-//        System.out.println("We have a problem! " + e.getMessage());
-        e.printStackTrace();
-        return new ErrorBody("User with that ID has already existed in the DB");
-    }
-
+    // User Exceptions
     @ExceptionHandler(UserNullException.class)
     public ErrorBody handleUserNullException(Exception e) {
-//        System.out.println("We have a problem! " + e.getMessage());
         e.printStackTrace();
-        return new ErrorBody("User value is NULL");
+        return new ErrorBody(e.getMessage());
     }
 
-
+    @ExceptionHandler(UserSqlException.class)
+    public ErrorBody handleUserSqlException(Exception e) {
+        e.printStackTrace();
+        return new ErrorBody(e.getMessage());
+    }
 
 
     static class ErrorBody {

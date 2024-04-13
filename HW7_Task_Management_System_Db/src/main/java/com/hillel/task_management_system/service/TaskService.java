@@ -1,183 +1,108 @@
 package com.hillel.task_management_system.service;
 
 
+import com.hillel.task_management_system.dao.TaskDao;
+import com.hillel.task_management_system.dao.UserDao;
 import com.hillel.task_management_system.enums.Priority;
 import com.hillel.task_management_system.enums.Status;
-import com.hillel.task_management_system.exceptions.TaskExistsException;
-import com.hillel.task_management_system.exceptions.TaskNullException;
+import com.hillel.task_management_system.exceptions.*;
 import com.hillel.task_management_system.model.Task;
-import com.hillel.task_management_system.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class TaskService {
 
+//    @Autowired
+//    private UserService userService;
+
     @Autowired
-    private UserService userService;
+    private UserDao userDao;
 
-    private final List<Task> notAssignedTasks = new ArrayList<>();
+    @Autowired
+    private TaskDao taskDao;
 
-    private final Map<User, List<Task>> tasks = new HashMap<>();
 
-    public String addTaskToNotAssignedTasksList(Task task) {
+    public void addTaskToDatabase(Task task) throws SQLException {
         if (task == null) {
-            throw new TaskNullException("Error: Can't add task to not assigned tasks list. Task is NULL");
-        } else if (notAssignedTasks.contains(task)) {
-            throw new TaskExistsException("Error: Can't add task to not assigned tasks list. Task has already exist!");
-        }else {
-            notAssignedTasks.add(task);
-            return "Task has been added successfully!";
-        }
-    }
-
-    public List<Task> showNotAssignedTasks() {
-        for (Task t : notAssignedTasks) {
-            System.out.println(t);
-        }
-        return notAssignedTasks;
-    }
-
-
-    public void assignTaskToUser(int userId, Task task) {
-        User user = userService.getUserById(userId);
-        if (task != null && userService != null) {
-            if (user != null) {
-                List<Task> userTasks = tasks.computeIfAbsent(user, k -> new ArrayList<>());
-                userTasks.add(task);
-                for (int i = 0; i < notAssignedTasks.size(); i++) {
-                    if(notAssignedTasks.get(i).getId().equals(task.getId())) {
-                        notAssignedTasks.remove(notAssignedTasks.get(i));
-                    }
-                }
-
-            } else {
-                System.out.println("Error: Can't assign task to user. User with id: " + userId + " is NULL!");
-            }
+            throw new TaskNullException("Error: Can't add task to DB. Task is NULL!");
+        } else if (taskDao.taskExists(task.getTaskId())) {
+            throw new TaskSqlException("Error: Can't add task to DB. Task has already exist!");
         } else {
-            System.out.println("Error: Can't assign task to user. Task or UserService is null!");
+            taskDao.addTaskToDatabase(task);
         }
     }
 
+    public List<Task> getAllTasks() throws SQLException {
+        if (taskDao.getAllTasks() == null) {
+            throw new UserSqlException("Error: Can't get tasks from DB. List of tasks is NULL!");
+        }
+        return taskDao.getAllTasks();
+    }
 
-    public List<Task> showUserTasks(User user) {
-        List<Task> userTasks = tasks.get(user);
-        if (user != null) {
-            if (userTasks == null || userTasks.isEmpty()) {
-                System.out.println("No tasks for : " + user.getName());
-            } else {
-                System.out.println("List of tasks for -> " + user);
-                for (Task t : userTasks) {
-                    System.out.println(t);
-                }
-            }
+
+    public String assignTaskToUser(int userId, int taskId) throws SQLException {
+        if (!taskDao.taskExists(taskId)) {
+            throw new TaskSqlException("Error: Task with ID " + taskId + " does not exist!");
+        } else if (!userDao.userExists(userId)) {
+            throw new TaskSqlException("Error: User with ID " + userId + " does not exist!");
+        } else if (taskDao.taskIsAssigned(taskId)) {
+            throw new TaskSqlException("Error: Task with ID " + taskId + " is already assigned to a user!");
         } else {
-            System.out.println("Error: Can't show user tasks. User is null!");
+            taskDao.assignTaskToUser(userId, taskId);
+            return "Task with ID " + taskId + " assigned to User with ID " + userId + " successfully!";
         }
-        return userTasks;
     }
 
-    public void changeTaskStatus(int userId, int taskId, Status status) {
-        User user = userService.getUserById(userId);
-        if (user == null) {
-            System.out.println("Error: Can't change task status. User with id: " + userId + " is null!");
+
+    public List<Task> getUserTasks(int userId) throws SQLException {
+        if (!userDao.userExists(userId)) {
+            throw new TaskSqlException("Error: Can't get User's tasks. User doesn't exist!");
+        } else if (userDao.getUserById(userId) == null) {
+            throw new UserNullException("Error: Can't get user from DB. User is NULL!");
         } else {
-            List<Task> userTasks = tasks.get(user);
-            if (userTasks != null && !userTasks.isEmpty()) {
-                for (Task t : userTasks) {
-                    if (t.getId() == taskId) {
-                        t.setStatus(status);
-                    }
-                }
-            } else {
-                System.out.println("Error: No tasks found for user.");
+            if (taskDao.getUserTasks(userId).isEmpty()) {
+                throw new TaskSqlException("No tasks for User with ID: " + userId);
             }
+            return taskDao.getUserTasks(userId);
         }
     }
 
-    public List<Task> findTaskByStatus(Status status) {
-        List<Task> allFoundedTasks = new ArrayList<>();
-        for (User user : tasks.keySet()) {
-            List<Task> foundedTasks = new ArrayList<>();
-            List<Task> userTasks = tasks.get(user);
-            if (user == null && userTasks.isEmpty()) {
-                System.out.println("Error: Can't find task by status. User is null or list of user's tasks is empty.");
-            } else {
-                for (Task t : userTasks) {
-                    if (t.getStatus().equals(status)) {
-                        foundedTasks.add(t);
-                        allFoundedTasks.add(t);
-                    }
-                }
-                if (!foundedTasks.isEmpty()) {
-                    System.out.println(user + " has task(s) with status: "
-                            + status + "\n" + foundedTasks);
-                }
-            }
+    public List<Task> findTaskByDeadline(String deadline) throws SQLException {
+        if (deadline == null) {
+            throw new TaskNullException("Error: Request string is NULL!");
         }
-        return allFoundedTasks;
+        return taskDao.getTasksByDeadline(deadline);
     }
 
-    public List<Task> findTaskByPriority(Priority priority) {
-        List<Task> allFoundedTasks = new ArrayList<>();
-        for (User user : tasks.keySet()) {
-            List<Task> foundedTasks = new ArrayList<>();
-            List<Task> userTasks = tasks.get(user);
-            if (user == null && userTasks.isEmpty()) {
-                System.out.println("Error: Can't find task by priority. User is null or list of user's tasks is empty.");
-            } else {
-                for (Task t : userTasks) {
-                    if (t.getPriority().equals(priority)) {
-                        foundedTasks.add(t);
-                        allFoundedTasks.add(t);
-                    }
-                }
-                if (!foundedTasks.isEmpty()) {
-                    System.out.println(user + " has task(s) with priority: "
-                            + priority + "\n" + foundedTasks);
-                }
-            }
+
+    public List<Task> findTaskByPriority(Priority priority) throws SQLException {
+        if (priority == null) {
+            throw new TaskNullException("Error: Request PRIORITY is NULL!");
         }
-        return allFoundedTasks;
+        return taskDao.getTasksByPriority(priority);
     }
 
-    public List<Task> findTaskByDeadline(String deadline) {
-        List<Task> allFoundedTasks = new ArrayList<>();
-        for (User user : tasks.keySet()) {
-            List<Task> foundedTasks = new ArrayList<>();
-            List<Task> userTasks = tasks.get(user);
-            if (user == null && userTasks.isEmpty()) {
-                System.out.println("Error: Can't find task by deadline. User is null or list of user's tasks is empty.");
-            } else {
-                for (Task t : userTasks) {
-                    if (t.getDeadline().equals(deadline)) {
-                        foundedTasks.add(t);
-                        allFoundedTasks.add(t);
-                    }
-                }
-                if (!foundedTasks.isEmpty()) {
-                    System.out.println(user + " has task(s) with deadline: "
-                            + deadline + "\n" + foundedTasks);
-                }
-            }
+    public List<Task> findTaskByStatus(Status status) throws SQLException {
+        if (status == null) {
+            throw new TaskNullException("Error: Request STATUS is NULL!");
         }
-        return allFoundedTasks;
+        return taskDao.getTasksByStatus(status);
     }
 
-    public void deleteUserFromListOfTask(User user) {
-        if (user == null) {
-            System.out.println("Error. Can't delete user from list of tasks. User is null!");
+    public String changeTaskStatus(int userId, int taskId, Status status) throws SQLException {
+        if (!userDao.userExists(userId)) {
+            throw new UserSqlException("Error: Can't get User's tasks. User doesn't exist!");
+        } else if (userDao.getUserById(userId) == null) {
+            throw new UserNullException("Error: Can't remove user from DB. User is NULL!");
+        } else if (!taskDao.taskExists(taskId)) {
+            throw new TaskSqlException("Error: Can't get Task from DB. Task doesn't exist!");
         } else {
-            for (Task t : tasks.get(user)) {
-                addTaskToNotAssignedTasksList(t);
-            }
-            userService.removeUser(user);
-            tasks.remove(user);
+            taskDao.changeTaskStatus(userId, taskId, status);
+            return "Task status has been changed successfully!";
         }
     }
 }

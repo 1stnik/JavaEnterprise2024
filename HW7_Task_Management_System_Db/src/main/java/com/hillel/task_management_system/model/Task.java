@@ -1,11 +1,13 @@
 package com.hillel.task_management_system.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hillel.task_management_system.enums.Priority;
 import com.hillel.task_management_system.enums.Status;
 
 public class Task {
 
-    private final Integer id;
+    private final Integer taskId;
 
     private final String title;
 
@@ -15,27 +17,45 @@ public class Task {
 
     private final Priority priority;
 
-    private Status status;
+    private final Status status;
 
-    public Task(Integer id, String title, String description, String deadline, Priority priority) {
-        this.id = id;
+    private Integer userId;
+
+
+    @JsonCreator
+    public Task(@JsonProperty("taskId") Integer taskId,
+                @JsonProperty("title") String title,
+                @JsonProperty("description") String description,
+                @JsonProperty("deadline") String deadline,
+                @JsonProperty("priority") Priority priority,
+                @JsonProperty("status") Status status) {
+        this.taskId = taskId;
         this.title = title;
         this.description = description;
         this.deadline = deadline;
         this.priority = priority;
-        this.status = Status.NEW;
+        this.status = status;
     }
 
-    public Integer getId() {
-        return id;
+
+    public Task(Integer taskId, String title, String description, String deadline, Priority priority, Status status, Integer userId) {
+        this.taskId = taskId;
+        this.title = title;
+        this.description = description;
+        this.deadline = deadline;
+        this.priority = priority;
+        this.status = status;
+        this.userId = userId;
     }
 
-    // Do not delete, need for REST!
+    public Integer getTaskId() {
+        return taskId;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    // Do not delete, need for REST!
     public String getDescription() {
         return description;
     }
@@ -52,14 +72,15 @@ public class Task {
         return status;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public Integer getUserId() {
+        return userId;
     }
+
 
     @Override
     public String toString() {
         return "Task{" +
-                "id=" + id +
+                "id=" + taskId +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", deadline='" + deadline + '\'' +

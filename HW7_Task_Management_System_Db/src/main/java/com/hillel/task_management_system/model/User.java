@@ -1,6 +1,5 @@
 package com.hillel.task_management_system.model;
 
-
 public class User {
 
     private final int id;

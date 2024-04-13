@@ -1,56 +1,59 @@
 package com.hillel.task_management_system.service;
 
-import com.hillel.task_management_system.exceptions.UserDoesntExistException;
-import com.hillel.task_management_system.exceptions.UserExistsException;
+import com.hillel.task_management_system.dao.UserDao;
+import com.hillel.task_management_system.exceptions.UserSqlException;
 import com.hillel.task_management_system.exceptions.UserNullException;
 import com.hillel.task_management_system.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.List;
 
 @Service
 public class UserService {
 
-    private TaskService taskService;
+    @Autowired
+    private UserDao userDao;
 
-    private final Map<Integer, User> users = new HashMap<>();
-
-
-    public Map<Integer, User> getUsers() {
-        return users;
-    }
-
-    public User getUserById(int id) {
-        if (users.get(id) == null) {
-            throw new UserDoesntExistException("Error: Can't get user from DB. User with id = " + id + " doesn't exist in DB.");
-        } else {
-            return users.get(id);
-        }
-    }
-
-    public String addUser(User user) {
+    public String addUser(User user) throws SQLException {
         if (user == null) {
             throw new UserNullException("Error: Can't add user to DB. User is NULL.");
-        }
-        else if (users.containsKey(user.getId())) {
-            throw new UserExistsException("Error: User with id = " + user.getId() + " has already existed in DataBase!");
-        }
-        else {
-            users.put(user.getId(), user);
-            return "User with id = " + user.getId() + " and name = '" + user.getName() + "' was added to DB successfully!";
+        } else if (userDao.userExists(user.getId())) {
+            throw new UserSqlException("Error: User with id = " + user.getId() + " has already existed in DataBase!");
+        } else {
+            userDao.addUser(user);
+            return "User with id = " + user.getId() + " and name = '" + user.getName()
+                    + "' was added to DB successfully!";
         }
     }
 
-    public String removeUser(User user) {
-        if (user == null) {
-            throw new UserNullException("Error: Can't remove user from DB. User is NULL.");
-        } else if (!users.containsKey(user.getId())) {
-            throw new UserDoesntExistException("Error: Can't remove user from DB. User with id = " + user.getId() + " doesn't exist in DB.");
+    public User getUserById(int userId) throws SQLException {
+        if (!userDao.userExists(userId)) {
+            throw new UserSqlException("Error: Can't get user from DB. User with id = " + userId
+                    + " doesn't exist in DB.");
         } else {
-            users.remove(user.getId());
-            return "User with id = " + user.getId() + " and name = '" + user.getName() + "' had been removed from DB successfully!";
+            return userDao.getUserById(userId);
         }
+    }
+
+    public String removeUser(int userId) throws SQLException {
+        if (!userDao.userExists(userId)) {
+            throw new UserSqlException("Error: Can't remove user from DB. User with id = " + userId
+                    + " doesn't exist in DB.");
+        }
+        else if (userDao.getUserById(userId) == null) {
+            throw new UserNullException("Error: Can't remove user from DB. User is NULL.");
+        }
+        else {
+            userDao.removeUser(userId);
+            return "User with id = " + userId + "' had been removed from DB successfully!";
+        }
+    }
+
+    public List<User> getAllUsers() throws SQLException {
+        if (userDao.getUsers() == null) {
+            throw new UserNullException("Error: Can't get user from DB. List of users is NULL.");
+        } else return userDao.getUsers();
     }
 }
