@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  db:
+    build:
+      context: ./db_build
+      dockerfile: Dockerfile
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_HOST: host.docker.internal
+      POSTGRES_DB: task_manager_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 08080808
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    volumes:
+      - ./target:/target
+
+volumes:
+  pgdata:
