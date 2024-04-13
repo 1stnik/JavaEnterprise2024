@@ -1,10 +1,13 @@
 package com.hillel.task_management_system.enums;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum Priority {
     HIGH("HIGH"),
     MEDIUM("MEDIUM"),
     LOW("LOW");
 
+    @JsonProperty("priority")
     private final String value;
 
 

@@ -1,5 +1,7 @@
 package com.hillel.task_management_system.config;
 
+import com.hillel.task_management_system.dao.TaskDao;
+import com.hillel.task_management_system.dao.UserDao;
 import com.hillel.task_management_system.service.TaskService;
 import com.hillel.task_management_system.service.UserService;
 import org.springframework.context.annotation.Bean;
@@ -19,5 +21,19 @@ public class ConfigTaskApplication {
         return new TaskService();
     }
 
-}
+    @Bean
+    public TaskDao taskDao() {
+        return new TaskDao();
+    }
 
+    @Bean
+    public UserDao userDao() {
+        return new UserDao();
+    }
+
+    @Bean
+    public ConnectionConfig connectionConfig() {
+        return new ConnectionConfig();
+    }
+
+}

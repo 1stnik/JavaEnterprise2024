@@ -1,9 +1,12 @@
 package com.hillel.task_management_system.controller;
 
+import com.hillel.task_management_system.dao.UserDao;
 import com.hillel.task_management_system.model.User;
 import com.hillel.task_management_system.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -15,28 +18,25 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/get_user_by_id/{userId}")
-    public User getUserById(@PathVariable int userId) {
-        return userService.getUserById(userId);
-    }
-
 
     @PostMapping(path = "/add_user")
-    public String addUser(@RequestBody User user) {
+    public String addUser(@RequestBody User user) throws SQLException {
         return userService.addUser(user);
     }
 
+    @GetMapping("/get_user_by_id/{userId}")
+    public User getUserById(@PathVariable int userId) throws SQLException {
+        return userService.getUserById(userId);
+    }
 
     @DeleteMapping("/remove_user/{userId}")
-    public String removeUser(@PathVariable int userId) {
-        return userService.removeUser(userService.getUserById(userId));
+    public String removeUser(@PathVariable int userId) throws SQLException {
+        return userService.removeUser(userId);
     }
 
-
-    @GetMapping("/list_of_users")
-    public Map<Integer, User> getUsers() {
-        return userService.getUsers();
+    @GetMapping("/get_all_users")
+    public List<User> getAllUsers() throws SQLException {
+        return userService.getAllUsers();
     }
-
 
 }

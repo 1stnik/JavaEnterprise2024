@@ -1,5 +1,7 @@
 package com.hillel.task_management_system.enums;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum Status {
     NEW("NEW"),
     IN_PROGRESS("IN_PROGRESS"),
@@ -7,6 +9,7 @@ public enum Status {
     PENDING("PENDING");
 
 
+    @JsonProperty("status")
     private final String value;
 
 
