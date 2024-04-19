@@ -22,7 +22,7 @@ public class TaskDao {
 
 
     public void addTaskToDatabase(Task task) throws SQLException {
-        String sql = "INSERT INTO task_manager.tasks (task_id, title, description, deadline, priority, status) " +
+        String sql = "INSERT INTO tasks (task_id, title, description, deadline, priority, status) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setInt(1, task.getTaskId());
@@ -39,7 +39,7 @@ public class TaskDao {
 
 
     public List<Task> getAllTasks() throws TaskSqlException {
-        String sql = "SELECT * FROM task_manager.tasks";
+        String sql = "SELECT * FROM tasks";
         List<Task> tasks = new ArrayList<>();
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
@@ -55,14 +55,14 @@ public class TaskDao {
                 tasks.add(task);
             }
         } catch (SQLException e) {
-            throw new TaskSqlException("Error: Failed to retrieve tasks from database");
+            throw new TaskSqlException("Error: Failed to retrieve tasks from database", e);
         }
         return tasks;
     }
 
 
     public void assignTaskToUser(int userId, int taskId) throws TaskSqlException {
-        String sql = "UPDATE task_manager.tasks SET user_id = ? WHERE task_Id = ?";
+        String sql = "UPDATE tasks SET user_id = ? WHERE task_Id = ?";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setInt(1, userId);
             statement.setInt(2, taskId);
@@ -75,7 +75,7 @@ public class TaskDao {
 
     public List<Task> getUserTasks(int userId) throws SQLException {
         List<Task> userTasks = new ArrayList<>();
-        String sql = "SELECT * FROM task_manager.tasks WHERE user_id = ?";
+        String sql = "SELECT * FROM tasks WHERE user_id = ?";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setInt(1, userId);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -99,7 +99,7 @@ public class TaskDao {
 
     public List<Task> getTasksByDeadline(String deadline) throws TaskSqlException {
         List<Task> tasks = new ArrayList<>();
-        String sql = "SELECT * FROM task_manager.tasks WHERE deadline = ?";
+        String sql = "SELECT * FROM tasks WHERE deadline = ?";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setString(1, deadline);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -123,7 +123,7 @@ public class TaskDao {
 
     public List<Task> getTasksByPriority(Priority priority) throws TaskSqlException {
         List<Task> tasks = new ArrayList<>();
-        String sql = "SELECT * FROM task_manager.tasks WHERE priority = ?";
+        String sql = "SELECT * FROM tasks WHERE priority = ?";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setString(1, priority.getValue());
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -149,7 +149,7 @@ public class TaskDao {
 
     public List<Task> getTasksByStatus(Status status) throws TaskSqlException {
         List<Task> tasks = new ArrayList<>();
-        String sql = "SELECT * FROM task_manager.tasks WHERE status = ?";
+        String sql = "SELECT * FROM tasks WHERE status = ?";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setString(1, status.getValue());
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -174,7 +174,7 @@ public class TaskDao {
 
 
     public void changeTaskStatus(int userId, int taskId, Status status) throws SQLException {
-        String sql = "UPDATE task_manager.tasks SET status = ? WHERE task_Id = ? AND user_id = ?";
+        String sql = "UPDATE tasks SET status = ? WHERE task_Id = ? AND user_id = ?";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setString(1, status.getValue());
             statement.setInt(2, taskId);
@@ -188,7 +188,7 @@ public class TaskDao {
 
     // Service method
     public boolean taskExists(int taskId) throws SQLException {
-        String sql = "SELECT EXISTS (SELECT 1 FROM task_manager.tasks WHERE task_id = ?)";
+        String sql = "SELECT EXISTS (SELECT 1 FROM tasks WHERE task_id = ?)";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setInt(1, taskId);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -207,7 +207,7 @@ public class TaskDao {
 
     // Service method
     public boolean taskIsAssigned(int taskId) throws SQLException {
-        String sql = "SELECT user_id FROM task_manager.tasks WHERE task_Id = ?";
+        String sql = "SELECT user_id FROM tasks WHERE task_Id = ?";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setInt(1, taskId);
             try (ResultSet resultSet = statement.executeQuery()) {

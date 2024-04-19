@@ -1,28 +1,109 @@
 version: '3'
 
 services:
-  db:
-    build:
-      context: ./db_build
-      dockerfile: Dockerfile
-    ports:
-      - "5433:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    environment:
-      POSTGRES_HOST: host.docker.internal
-      POSTGRES_DB: task_manager_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 08080808
-
   app:
     build: .
+    env_file:
+      - .env
     ports:
       - "8080:8080"
     depends_on:
       - db
+    networks:
+      - app-network
+  db:
+    image: postgres:latest
+    ports:
+      - "6432:5432"
     volumes:
-      - ./target:/target
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      URL: jdbc:postgresql://db:5432/postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
-  pgdata:
+  postgres_data:
+
+
+
+
+
+
+#version: '3'
+#
+#services:
+#  app:
+#    build: .
+#    env_file:
+#      - .env
+#    ports:
+#      - "8080:8080"
+#  db:
+#    container_name: task_manager_db_container
+#    image: postgres:latest
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#volumes:
+#  postgres_data:
+
+
+
+#services:
+#  db:
+#    build:
+#      context: ./db_build
+#      dockerfile: Dockerfile
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
+#    environment:
+#      POSTGRES_HOST: host.docker.internal
+#      POSTGRES_DB: task_manager_db
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: 08080808
+#
+#  app:
+#    build: .
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - db
+#    volumes:
+#      - ./target:/target
+#    volumes:
+#      postgres_data:
+
+#    environment:
+#      - POSTGRES_DB=task_manager_db
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=08080808
+
+#    volumes:
+#      - ./target:/target
+#    environment:
+#      - PG_HOST=task_management_system_db_docker-db-1
+#      - PG_SCHEMA=task_manager
+#      - PG_DATABASE=task_manager_db
+#      - PG_USERNAME=postgres
+#      - PG_PASSWORD=08080808
+#      - SPRING_PROFILES_ACTIVE=local
+#    depends_on:
+#      - db
+#    volumes:
+#      - ./target:/target
+
+#    build:
+#      context: ./db_build
+#      dockerfile: Dockerfile
+#    container_name: task_management_system_db_docker-db-1

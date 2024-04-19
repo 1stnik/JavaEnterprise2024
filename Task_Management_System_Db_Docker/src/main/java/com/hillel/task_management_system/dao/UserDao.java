@@ -21,7 +21,7 @@ public class UserDao {
 
 
     public void addUser(User user) throws UserSqlException {
-        String sql = "INSERT INTO task_manager.users (id, name) VALUES (?, ?)";
+        String sql = "INSERT INTO users (id, name) VALUES (?, ?)";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setInt(1, user.getId());
             statement.setString(2, user.getName());
@@ -33,7 +33,7 @@ public class UserDao {
 
 
     public User getUserById(int id) throws UserSqlException {
-        String sql = "SELECT * FROM task_manager.users WHERE id = ?";
+        String sql = "SELECT * FROM users WHERE id = ?";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -50,7 +50,7 @@ public class UserDao {
 
 
     public void removeUser(int id) throws UserSqlException {
-        String sql = "DELETE FROM task_manager.users WHERE id = ?";
+        String sql = "DELETE FROM users WHERE id = ?";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setInt(1, id);
             statement.executeUpdate();
@@ -61,7 +61,7 @@ public class UserDao {
 
 
     public List<User> getUsers() throws UserSqlException {
-        String sql = "SELECT * FROM task_manager.users";
+        String sql = "SELECT * FROM users";
         List<User> users = new ArrayList<>();
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
@@ -79,7 +79,7 @@ public class UserDao {
 
     // Service method
     public boolean userExists(int userId) throws SQLException {
-        String sql = "SELECT EXISTS (SELECT 1 FROM task_manager.users WHERE id = ?)";
+        String sql = "SELECT EXISTS (SELECT 1 FROM users WHERE id = ?)";
         try (PreparedStatement statement = connectionConfig.getConnection().prepareStatement(sql)) {
             statement.setInt(1, userId);
             try (ResultSet resultSet = statement.executeQuery()) {

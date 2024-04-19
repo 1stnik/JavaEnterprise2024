@@ -36,7 +36,6 @@ public class Task_Management_System_Db_Docker {
 
         // Add users
         System.out.println("\n----------------------------------Add users-------------------------------------- ");
-        System.out.println("List of users: ");
 
         User user1 = new User(1, "First User");
         User user2 = new User(2, "Second User");
@@ -73,5 +72,4 @@ public class Task_Management_System_Db_Docker {
         taskService.addTaskToDatabase(task9);
 
     }
-
 }

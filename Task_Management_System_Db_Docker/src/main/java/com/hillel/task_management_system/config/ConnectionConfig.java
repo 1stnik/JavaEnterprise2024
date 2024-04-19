@@ -4,17 +4,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
+import java.util.Properties;
 
 @Component
 public class ConnectionConfig {
 
-    @Value("jdbc:postgresql://localhost:5432/task_manager_db")
+    @Value("${spring.datasource.url}")
     private String url;
 
-    @Value("postgres")
+    @Value("${spring.datasource.username}")
     private String username;
 
-    @Value("08080808")
+    @Value("${spring.datasource.password}")
     private String password;
 
     public Connection getConnection() throws SQLException {
