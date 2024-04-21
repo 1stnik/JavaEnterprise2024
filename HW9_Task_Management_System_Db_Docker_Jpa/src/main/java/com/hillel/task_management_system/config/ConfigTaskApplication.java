@@ -2,8 +2,7 @@ package com.hillel.task_management_system.config;
 
 import com.hillel.task_management_system.dao.TaskDao;
 import com.hillel.task_management_system.dao.UserDao;
-import com.hillel.task_management_system.service.TaskService;
-import com.hillel.task_management_system.service.UserService;
+import com.hillel.task_management_system.service.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -15,13 +14,30 @@ public class ConfigTaskApplication {
 
 
     @Bean
-    public UserService userService() {
-        return new UserService();
+    public UserServiceJdbc userService() {
+        return new UserServiceJdbc();
     }
 
     @Bean
-    public TaskService taskService() {
-        return new TaskService();
+    public TaskServiceJdbc taskService() {
+        return new TaskServiceJdbc();
+    }
+
+
+    @Bean
+    public TaskServiceJpa taskServiceJpa() {
+        return new TaskServiceJpa();
+    }
+
+    @Bean
+    public TaskServiceFactory taskFactory() {
+        return new TaskServiceFactory();
+    }
+
+
+    @Bean
+    public UserServiceJpa userServiceJpa() {
+        return new UserServiceJpa();
     }
 
     @Bean

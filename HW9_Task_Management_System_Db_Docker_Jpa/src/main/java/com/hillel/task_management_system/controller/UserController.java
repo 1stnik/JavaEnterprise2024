@@ -2,6 +2,9 @@ package com.hillel.task_management_system.controller;
 
 import com.hillel.task_management_system.model.User;
 import com.hillel.task_management_system.service.UserService;
+import com.hillel.task_management_system.service.UserServiceFactory;
+import com.hillel.task_management_system.service.UserServiceJdbc;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -10,10 +13,13 @@ import java.util.List;
 @RestController
 public class UserController {
 
+    private final UserServiceFactory userServiceFactory;
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    @Autowired
+    public UserController(UserServiceFactory userServiceFactory) {
+        this.userServiceFactory = userServiceFactory;
+        this.userService = userServiceFactory.createUserService();
     }
 
 

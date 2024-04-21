@@ -3,7 +3,9 @@ package com.hillel.task_management_system.controller;
 import com.hillel.task_management_system.enums.Priority;
 import com.hillel.task_management_system.enums.Status;
 import com.hillel.task_management_system.model.Task;
+import com.hillel.task_management_system.service.TaskServiceFactory;
 import com.hillel.task_management_system.service.TaskService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -12,12 +14,16 @@ import java.util.List;
 @RestController
 public class TaskController {
 
+
+    private final TaskServiceFactory taskServiceFactory;
     private final TaskService taskService;
 
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
 
+    @Autowired
+    public TaskController(TaskServiceFactory taskServiceFactory) {
+        this.taskServiceFactory = taskServiceFactory;
+        this.taskService = taskServiceFactory.createTaskService();
+    }
 
     @PostMapping(value = "/add_task")
     public String addTaskToDb(@RequestBody Task task) throws SQLException {

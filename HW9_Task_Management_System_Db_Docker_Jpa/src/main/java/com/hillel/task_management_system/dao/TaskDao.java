@@ -6,7 +6,6 @@ import com.hillel.task_management_system.enums.Status;
 import com.hillel.task_management_system.exceptions.TaskSqlException;
 import com.hillel.task_management_system.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-//@ConditionalOnProperty(name = "application.component", havingValue = "jdbc")
 public class TaskDao {
 
     @Autowired
