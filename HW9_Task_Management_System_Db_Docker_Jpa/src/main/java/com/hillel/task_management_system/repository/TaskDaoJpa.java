@@ -1,7 +1,6 @@
 package com.hillel.task_management_system.repository;
 
 import com.hillel.task_management_system.model.Task;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-//@ConditionalOnProperty(name = "application.component", havingValue = "jpa")
 public interface TaskDaoJpa extends JpaRepository<Task, Integer> {
 
     @Modifying

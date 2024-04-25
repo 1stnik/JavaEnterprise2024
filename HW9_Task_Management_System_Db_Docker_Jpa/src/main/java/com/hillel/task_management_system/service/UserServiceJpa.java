@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Service
-@ConditionalOnProperty(name = "application.component", havingValue = "jpa")
+@ConditionalOnProperty(prefix = "app.connection", name = "type", havingValue = "jpa")
 public class UserServiceJpa implements UserService{
 
     @Autowired
@@ -60,6 +60,12 @@ public class UserServiceJpa implements UserService{
     public List<User> getAllUsers() throws SQLException {
         if (userDao.getUsers() == null) {
             throw new UserNullException("Error: Can't get user from DB. List of users is NULL.");
-        } else return userDaoJpa.findAll();
+        } else {
+
+            //TODO Delete string below
+            System.out.println("You get all users with JPA successfully!!!!!!");
+
+            return userDaoJpa.findAll();
+        }
     }
 }

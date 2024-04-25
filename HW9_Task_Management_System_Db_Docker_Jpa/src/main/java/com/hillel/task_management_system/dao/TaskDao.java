@@ -51,7 +51,6 @@ public class TaskDao {
                         Priority.fromValue(resultSet.getString("priority")),
                         Status.fromValue(resultSet.getString("status")),
                         resultSet.getInt("user_Id"));
-
                 tasks.add(task);
             }
         } catch (SQLException e) {

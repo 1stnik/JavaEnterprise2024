@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Service
-@ConditionalOnProperty(name = "application.component", havingValue = "jdbc")
+@ConditionalOnProperty(prefix = "app.connection", name = "type", havingValue = "jdbc")
 public class TaskServiceJdbc implements TaskService{
 
     @Autowired
@@ -42,6 +42,10 @@ public class TaskServiceJdbc implements TaskService{
         if (taskDao.getAllTasks() == null) {
             throw new UserSqlException("Error: Can't get tasks from DB. List of tasks is NULL!");
         }
+
+        //TODO Delete string below
+        System.out.println("You get all tasks with JDBC successfully!!!!!!");
+
         return taskDao.getAllTasks();
     }
 

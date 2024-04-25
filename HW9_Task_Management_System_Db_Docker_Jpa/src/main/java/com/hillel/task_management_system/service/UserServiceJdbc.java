@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Service
-@ConditionalOnProperty(name = "application.component", havingValue = "jdbc")
+@ConditionalOnProperty(prefix = "app.connection", name = "type", havingValue = "jdbc")
 public class UserServiceJdbc implements UserService{
 
     @Autowired
@@ -23,15 +23,15 @@ public class UserServiceJdbc implements UserService{
     private UserDaoJpa userDaoJpa;
 
     public String addUser(User user) throws SQLException {
-//        if (user == null) {
-//            throw new UserNullException("Error: Can't add user to DB. User is NULL.");
-//        } else if (userDao.userExists(user.getId())) {
-//            throw new UserSqlException("Error: User with id = " + user.getId() + " has already existed in DataBase!");
-//        } else {
-//            userDao.addUser(user);
+        if (user == null) {
+            throw new UserNullException("Error: Can't add user to DB. User is NULL.");
+        } else if (userDao.userExists(user.getId())) {
+            throw new UserSqlException("Error: User with id = " + user.getId() + " has already existed in DataBase!");
+        } else {
+            userDao.addUser(user);
             return "User with id = " + user.getId() + " and name = '" + user.getName()
                     + "' was added to DB successfully!";
-//        }
+        }
     }
 
     public User getUserById(int userId) throws SQLException {
@@ -60,6 +60,12 @@ public class UserServiceJdbc implements UserService{
     public List<User> getAllUsers() throws SQLException {
         if (userDao.getUsers() == null) {
             throw new UserNullException("Error: Can't get user from DB. List of users is NULL.");
-        } else return userDao.getUsers();
+        } else {
+
+            //TODO Delete string below
+            System.out.println("You get all users with JDBC successfully!!!!!!");
+
+            return userDao.getUsers();
+        }
     }
 }

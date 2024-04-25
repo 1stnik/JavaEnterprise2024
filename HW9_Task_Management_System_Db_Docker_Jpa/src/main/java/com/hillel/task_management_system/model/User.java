@@ -26,14 +26,6 @@ public class User {
         this.name = name;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
 
     @Override
     public String toString() {

@@ -66,34 +66,6 @@ public class Task {
         this.userId = userId;
     }
 
-    public Integer getTaskId() {
-        return taskId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getDeadline() {
-        return deadline;
-    }
-
-    public Priority getPriority() {
-        return priority;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
 
     @Override
     public String toString() {

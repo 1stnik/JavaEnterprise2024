@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Service
-@ConditionalOnProperty(name = "application.component", havingValue = "jpa")
+@ConditionalOnProperty(prefix = "app.connection", name = "type", havingValue = "jpa")
 public class TaskServiceJpa implements TaskService{
 
     @Autowired
@@ -37,7 +37,6 @@ public class TaskServiceJpa implements TaskService{
         } else if (taskDao.taskExists(task.getTaskId())) {
             throw new TaskSqlException("Error: Can't add task to DB. Task has already exist!");
         } else {
-//            taskDao.addTaskToDatabase(task);
             taskDaoJpa.addTaskToDatabase(
                     task.getTaskId(),
                     task.getTitle(),
@@ -52,7 +51,10 @@ public class TaskServiceJpa implements TaskService{
         if (taskDao.getAllTasks() == null) {
             throw new UserSqlException("Error: Can't get tasks from DB. List of tasks is NULL!");
         }
-//        return taskDao.getAllTasks();
+
+        //TODO Delete string below
+        System.out.println("You get all tasks with JPA successfully!!!!!!");
+
         return taskDaoJpa.findAll();
     }
 
@@ -65,7 +67,6 @@ public class TaskServiceJpa implements TaskService{
         } else if (taskDao.taskIsAssigned(taskId)) {
             throw new TaskSqlException("Error: Task with ID " + taskId + " is already assigned to a user!");
         } else {
-//            taskDao.assignTaskToUser(userId, taskId);
             taskDaoJpa.assignTaskToUser(userId, taskId);
             return "Task with ID " + taskId + " assigned to User with ID " + userId + " successfully!";
         }
@@ -81,7 +82,6 @@ public class TaskServiceJpa implements TaskService{
             if (taskDao.getUserTasks(userId).isEmpty()) {
                 throw new TaskSqlException("No tasks for User with ID: " + userId);
             }
-//            return taskDao.getUserTasks(userId);
             return taskDaoJpa.findTasksByUserId(userId);
         }
     }
@@ -90,7 +90,6 @@ public class TaskServiceJpa implements TaskService{
         if (deadline == null) {
             throw new TaskNullException("Error: Request string is NULL!");
         }
-//        return taskDao.getTasksByDeadline(deadline);
         return taskDaoJpa.findTasksByDeadline(deadline);
     }
 
@@ -99,7 +98,6 @@ public class TaskServiceJpa implements TaskService{
         if (priority == null) {
             throw new TaskNullException("Error: Request PRIORITY is NULL!");
         }
-//        return taskDao.getTasksByPriority(priority);
         return taskDaoJpa.findTasksByPriority(priority.getValue());
     }
 
@@ -107,7 +105,6 @@ public class TaskServiceJpa implements TaskService{
         if (status == null) {
             throw new TaskNullException("Error: Request STATUS is NULL!");
         }
-//        return taskDao.getTasksByStatus(status);
         return taskDaoJpa.findTasksByStatus(status.getValue());
 
     }
@@ -120,7 +117,6 @@ public class TaskServiceJpa implements TaskService{
         } else if (!taskDao.taskExists(taskId)) {
             throw new TaskSqlException("Error: Can't get Task from DB. Task doesn't exist!");
         } else {
-//            taskDao.changeTaskStatus(userId, taskId, status);
             taskDaoJpa.changeTaskStatus(userId, taskId, status.getValue());
             return "Task status has been changed successfully!";
         }

@@ -3,6 +3,7 @@ package com.hillel.task_management_system.config;
 import com.hillel.task_management_system.dao.TaskDao;
 import com.hillel.task_management_system.dao.UserDao;
 import com.hillel.task_management_system.service.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -14,28 +15,26 @@ public class ConfigTaskApplication {
 
 
     @Bean
-    public UserServiceJdbc userService() {
-        return new UserServiceJdbc();
-    }
-
-    @Bean
+    @ConditionalOnProperty(prefix = "app.connection", name = "type", havingValue = "jdbc")
     public TaskServiceJdbc taskService() {
         return new TaskServiceJdbc();
     }
 
+    @Bean
+    @ConditionalOnProperty(prefix = "app.connection", name = "type", havingValue = "jdbc")
+    public UserServiceJdbc userService() {
+        return new UserServiceJdbc();
+    }
+
 
     @Bean
+    @ConditionalOnProperty(prefix = "app.connection", name = "type", havingValue = "jpa")
     public TaskServiceJpa taskServiceJpa() {
         return new TaskServiceJpa();
     }
 
     @Bean
-    public TaskServiceFactory taskFactory() {
-        return new TaskServiceFactory();
-    }
-
-
-    @Bean
+    @ConditionalOnProperty(prefix = "app.connection", name = "type", havingValue = "jpa")
     public UserServiceJpa userServiceJpa() {
         return new UserServiceJpa();
     }
